@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0b1f3a">
+  <meta name="description" content="Không gian cá nhân để theo dõi mục tiêu, dự án, lịch tuần và thói quen.">
+  <title>Workbench — Không gian cá nhân</title>
+  <style>
+    :root{
+      --navy:#0b1f3a;--navy2:#122f55;--blue:#2563eb;--blue2:#4f8cff;
+      --sky:#eaf2ff;--ice:#f5f8fd;--white:#fff;--ink:#17263b;--muted:#718096;
+      --line:#e4ebf4;--green:#147d64;--amber:#b7791f;--red:#b83d4b;
+      --shadow:0 16px 42px rgba(19,44,79,.08);--radius:18px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:24px}
+    body{margin:0;background:var(--ice);color:var(--ink);font:15px/1.55 Inter,"Segoe UI",Arial,sans-serif}
+    button,input,textarea{font:inherit}
+    button{cursor:pointer}
+    a{color:inherit;text-decoration:none}
+    .layout{min-height:100vh;display:grid;grid-template-columns:248px minmax(0,1fr)}
+    .sidebar{position:sticky;top:0;height:100vh;background:var(--navy);color:#dbe8fb;padding:26px 18px;display:flex;flex-direction:column;z-index:5}
+    .brand{display:flex;align-items:center;gap:12px;padding:0 10px 30px;border-bottom:1px solid rgba(255,255,255,.12)}
+    .brand-mark{width:40px;height:40px;border:1px solid rgba(255,255,255,.35);border-radius:12px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:17px;background:linear-gradient(145deg,#2e70eb,#194584)}
+    .brand strong{display:block;font-size:13px;letter-spacing:.1em;color:#fff}
+    .brand span{font-size:11px;color:#93a9c8;letter-spacing:.13em}
+    .nav-label{margin:26px 10px 10px;color:#7f99bd;font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+    .nav{display:grid;gap:5px}
+    .nav a{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:11px;color:#aebfd8;font-size:13px;transition:.2s}
+    .nav a:hover,.nav a.active{background:#17365f;color:#fff}
+    .nav a.active{box-shadow:inset 3px 0 var(--blue2)}
+    .nav svg{width:17px;height:17px;opacity:.88;flex:none}
+    .side-bottom{margin-top:auto;padding:15px 10px 2px;border-top:1px solid rgba(255,255,255,.12);font-size:11px;color:#839abc}
+    .side-bottom b{display:block;color:#dbe8fb;font-size:12px;margin-bottom:4px}
+    main{min-width:0;padding:24px clamp(18px,4vw,56px) 50px;max-width:1600px;width:100%;margin:auto}
+    .topbar{display:flex;justify-content:space-between;align-items:center;margin:2px 0 25px;gap:16px}
+    .date-label{font-size:12px;color:var(--muted);font-weight:650;letter-spacing:.03em}
+    .top-actions{display:flex;align-items:center;gap:9px}
+    .sample-tag{font-size:10px;text-transform:uppercase;letter-spacing:.12em;border:1px solid #c9d9f3;color:#3564a8;padding:7px 10px;border-radius:999px;background:#fff}
+    .bilingual-text{display:inline-block;vertical-align:baseline;max-width:100%}
+    .vi-copy{display:block}
+    .zh-copy{display:block;font-size:.73em;line-height:1.35;font-weight:550;letter-spacing:0;color:#718096;margin-top:2px}
+    .icon-btn{width:36px;height:36px;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--navy);display:grid;place-items:center}
+    .icon-btn svg{width:17px;height:17px}
+    .hero{background:var(--navy);color:#fff;border-radius:24px;padding:clamp(26px,4vw,48px);position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(235px,.7fr);gap:30px;box-shadow:var(--shadow)}
+    .hero:after{content:"";position:absolute;width:380px;height:380px;border:1px solid rgba(121,170,255,.18);border-radius:50%;right:14%;top:-280px;box-shadow:0 0 0 36px rgba(93,147,235,.05),0 0 0 72px rgba(93,147,235,.04)}
+    .eyebrow{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#94b9fb;font-weight:800;position:relative;z-index:1}
+    h1{font-size:clamp(31px,4.1vw,55px);line-height:1.08;letter-spacing:-.045em;margin:15px 0 14px;max-width:660px;position:relative;z-index:1}
+    h1 em{font-style:normal;color:#76a9ff}
+    .hero-copy{max-width:560px;color:#b9c9df;font-size:14px;position:relative;z-index:1}
+    .hero-links{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px;position:relative;z-index:1}
+    .btn{border:0;border-radius:10px;padding:10px 15px;font-size:12px;font-weight:750;display:inline-flex;align-items:center;gap:8px;transition:.2s}
+    .btn-primary{color:#0b1f3a;background:#fff}.btn-primary:hover{background:#dfeaff;transform:translateY(-1px)}
+    .btn-quiet{color:#dce8fb;background:#17365f;border:1px solid rgba(255,255,255,.13)}.btn-quiet:hover{background:#204577}
+    .hero-aside{align-self:end;position:relative;z-index:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:16px;padding:19px}
+    .hero-aside .small-title{font-size:10px;color:#9bb5da;text-transform:uppercase;letter-spacing:.16em;font-weight:800}
+    .hero-aside h2{font-size:18px;line-height:1.35;margin:9px 0;color:#fff}
+    .hero-aside p{font-size:12px;color:#b9c9df;margin:0}
+    .hero-aside .quote-mark{font-size:34px;color:#71a4ff;line-height:.8}
+    .section{margin-top:34px}
+    .section-head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:15px}
+    .section-kicker{font-size:10px;color:var(--blue);font-weight:850;letter-spacing:.17em;text-transform:uppercase}
+    h2.section-title{font-size:22px;line-height:1.2;letter-spacing:-.025em;margin:4px 0 0;color:var(--navy)}
+    .section-note{font-size:11px;color:var(--muted)}
+    .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-top:18px}
+    .stat,.card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 5px 20px rgba(25,50,84,.035)}
+    .stat{padding:17px 18px;min-height:110px;position:relative;overflow:hidden}
+    .stat:after{content:"";position:absolute;width:56px;height:56px;right:-17px;top:-18px;border-radius:50%;background:var(--sky)}
+    .stat-label{font-size:11px;color:var(--muted);font-weight:650;position:relative;z-index:1}
+    .stat-value{font-size:28px;line-height:1.2;margin:8px 0 4px;font-weight:850;letter-spacing:-.04em;color:var(--navy);position:relative;z-index:1}
+    .stat-foot{font-size:10px;color:#58708f}
+    .stat-foot strong{color:var(--green)}
+    .grid-two{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(290px,.85fr);gap:15px}
+    .card{padding:21px}
+    .card-top{display:flex;justify-content:space-between;align-items:start;gap:12px}
+    .card h3{margin:0;color:var(--navy);font-size:15px;letter-spacing:-.01em}
+    .card-sub{margin:4px 0 0;color:var(--muted);font-size:11px}
+    .pill{border-radius:999px;font-size:10px;font-weight:750;padding:5px 9px;background:var(--sky);color:#2458a5;white-space:nowrap}
+    .priority-list{display:grid;gap:0;margin-top:13px}
+    .priority{display:grid;grid-template-columns:30px 1fr auto;gap:11px;align-items:center;padding:13px 0;border-top:1px solid var(--line)}
+    .num{width:28px;height:28px;border-radius:9px;background:#edf4ff;color:#2a5eaa;display:grid;place-items:center;font-weight:800;font-size:11px}
+    .priority strong{font-size:12px;color:#20324a;display:block}
+    .priority span{font-size:10px;color:var(--muted)}
+    .status{font-size:10px;font-weight:750;color:var(--green);background:#e9f7f2;padding:5px 8px;border-radius:999px}
+    .status.wait{color:#93621a;background:#fff4df}
+    .progress-line{height:7px;background:#eaf0f8;border-radius:99px;overflow:hidden;margin:9px 0 6px}
+    .progress-line i{height:100%;display:block;background:linear-gradient(90deg,var(--blue),#62a0ff);border-radius:inherit}
+    .goal-row{margin-top:15px}
+    .goal-meta{display:flex;justify-content:space-between;gap:10px;font-size:11px}
+    .goal-meta strong{color:var(--navy)}.goal-meta span{color:var(--muted)}
+    .goal-foot{font-size:10px;color:var(--muted)}
+    .projects{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+    .project{padding:19px;position:relative;overflow:hidden}
+    .project .project-code{font-size:10px;letter-spacing:.15em;color:var(--blue);font-weight:850;text-transform:uppercase}
+    .project h3{font-size:15px;margin:8px 0 5px}
+    .project p{font-size:11px;color:var(--muted);margin:0;min-height:36px}
+    .project-bottom{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--muted);margin-top:12px}
+    .project-bottom b{color:var(--navy);font-size:11px}
+    .schedule{display:grid;gap:0;margin-top:11px}
+    .schedule-row{display:grid;grid-template-columns:68px 1fr 66px;gap:11px;align-items:center;padding:11px 0;border-top:1px solid var(--line)}
+    .schedule-time{font-size:10px;color:var(--muted);font-weight:700}
+    .schedule-event{border-left:3px solid var(--blue);padding:1px 0 1px 11px}
+    .schedule-event strong{display:block;font-size:11px;color:#20324a}
+    .schedule-event span{font-size:10px;color:var(--muted)}
+    .schedule-tag{text-align:right;font-size:9px;color:#4770a9;font-weight:750}
+    .habit-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:15px}
+    .habit{background:#f5f8fd;border:1px solid var(--line);border-radius:12px;padding:12px 10px;text-align:center}
+    .habit-icon{width:29px;height:29px;border-radius:9px;display:grid;place-items:center;background:#e6efff;color:#245eb6;margin:0 auto 8px;font-weight:800}
+    .habit strong{font-size:10px;display:block;color:#263952}
+    .habit span{font-size:9px;color:var(--muted)}
+    .week{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin-top:16px}
+    .day{border:1px solid var(--line);border-radius:11px;padding:9px 4px;text-align:center;background:#fff}
+    .day span{font-size:9px;color:var(--muted);display:block}
+    .day b{font-size:12px;color:var(--navy);display:block;margin:4px 0}
+    .day i{display:block;width:5px;height:5px;background:#d5dfec;border-radius:50%;margin:0 auto}
+    .day.done i{background:var(--blue)}.day.today{border-color:#8fb5f5;background:#f2f7ff}
+    .notes-area{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+    .note-box{min-height:190px}
+    .note-box textarea{width:100%;min-height:83px;border:1px solid var(--line);border-radius:10px;padding:11px;resize:vertical;background:#fbfcfe;outline:none;font-size:12px;color:var(--ink);margin-top:14px}
+    .note-box textarea:focus,.quick-input:focus{border-color:#8db3f5;box-shadow:0 0 0 3px #e9f1ff}
+    .note-actions{display:flex;justify-content:space-between;align-items:center;margin-top:9px}
+    .tiny-btn{border:0;border-radius:8px;padding:8px 11px;background:var(--navy);color:#fff;font-size:10px;font-weight:750}
+    .saved-note{font-size:10px;color:var(--green)}
+    .quick-add{display:flex;gap:8px;margin-top:15px}
+    .quick-input{min-width:0;flex:1;padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:#fbfcfe;outline:none;font-size:11px}
+    .quick-items{display:grid;gap:7px;margin-top:13px}
+    .quick-item{font-size:11px;color:#40536c;display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid #edf1f6}
+    .quick-item:before{content:"";width:7px;height:7px;border:1px solid #6c8bb4;border-radius:2px;flex:none}
+    .quote-panel{margin-top:15px;border-radius:var(--radius);background:#eaf2ff;border:1px solid #d8e6fb;padding:22px 24px;display:flex;align-items:center;gap:17px}
+    .quote-bar{width:4px;align-self:stretch;background:var(--blue);border-radius:5px;flex:none}
+    .quote-panel p{font-size:16px;font-weight:750;letter-spacing:-.01em;color:#17345c;margin:0}
+    .quote-panel small{display:block;margin-top:5px;font-size:10px;color:#59769e}
+    footer{margin-top:37px;padding:18px 3px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;color:#8090a4;font-size:10px}
+    .toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);opacity:0;background:var(--navy);color:white;padding:11px 16px;border-radius:10px;font-size:12px;box-shadow:var(--shadow);transition:.25s;z-index:20;pointer-events:none;text-align:center}.toast .zh-copy{color:#bfd2f1}
+    .toast.show{transform:translate(-50%,0);opacity:1}
+    @media(max-width:1050px){.layout{grid-template-columns:205px minmax(0,1fr)}.projects{grid-template-columns:1fr 1fr}.stats{grid-template-columns:repeat(2,1fr)}.grid-two{grid-template-columns:1fr}}
+    @media(max-width:700px){.layout{display:block}.sidebar{position:sticky;height:auto;padding:11px 14px;display:block}.brand{padding:0 2px 10px;border:0}.brand-mark{width:34px;height:34px}.nav-label,.side-bottom{display:none}.nav{display:flex;overflow:auto;gap:4px;padding-top:9px}.nav a{white-space:nowrap;padding:8px 10px;font-size:11px}.nav svg{display:none}main{padding:18px 14px 34px}.topbar{margin-bottom:17px}.hero{grid-template-columns:1fr;padding:25px 22px;gap:20px}.hero-aside{max-width:420px}.section{margin-top:28px}.projects{grid-template-columns:1fr}.notes-area{grid-template-columns:1fr}.sample-tag{font-size:8px}.section-note{display:none}.habit-grid{grid-template-columns:repeat(2,1fr)}.week{gap:4px}.day{padding:8px 2px}.schedule-row{grid-template-columns:55px 1fr 48px}.quote-panel p{font-size:14px}footer{flex-direction:column}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important}}
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <a class="brand" href="#top" aria-label="Về đầu trang">
+        <div class="brand-mark">W</div><div><strong>WORKBENCH</strong><span>PERSONAL SYSTEM</span></div>
+      </a>
+      <div class="nav-label">Không gian</div>
+      <nav class="nav" aria-label="Điều hướng chính">
+        <a class="active" href="#tong-quan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Tổng quan</a>
+        <a href="#muc-tieu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>Mục tiêu</a>
+        <a href="#du-an"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7.5h16v12H4zM8 7.5V5h8v2.5M4 12h16"/></svg>Dự án</a>
+        <a href="#lich-tuan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 9h18M8 13h3M8 17h7"/></svg>Lịch tuần</a>
+        <a href="#thoi-quen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12a8 8 0 1 0 2.35-5.65L4 8.7"/><path d="M4 4v4.7h4.7M12 7v5l3 2"/></svg>Thói quen</a>
+        <a href="#ghi-chu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h12a2 2 0 0 1 2 2v16l-4-2-4 2-4-2-4 2V5a2 2 0 0 1 2-2zM8 8h8M8 12h8"/></svg>Ghi chú</a>
+      </nav>
+      <div class="nav-label">Tác vụ nhanh</div>
+      <nav class="nav"><a href="#ghi-chu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg>Thêm việc / ghi chú</a></nav>
+      <div class="side-bottom"><b>FOCUS MODE</b>Một việc quan trọng tại một thời điểm.</div>
+    </aside>
+
+    <main id="top">
+      <div class="topbar">
+        <div class="date-label" id="today">KHÔNG GIAN CÁ NHÂN · WORK / LEARN / BUILD</div>
+        <div class="top-actions"><span class="sample-tag" data-i18n>TIẾNG VIỆT · 中文</span><span class="sample-tag" data-i18n>BẢN MẪU · DỮ LIỆU MINH HỌA</span><button class="icon-btn" aria-label="Lên đầu trang · 返回顶部" onclick="window.scrollTo({top:0,behavior:'smooth'})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button></div>
+      </div>
+
+      <section class="hero" id="tong-quan">
+        <div>
+          <div class="eyebrow">PERSONAL OPERATING SYSTEM · 2026</div>
+          <h1>Làm đúng việc.<br><em>Tiến đều mỗi ngày.</em></h1>
+          <p class="hero-copy">Một không gian gọn để nhìn rõ điều quan trọng, chia mục tiêu thành bước nhỏ và theo dõi tiến độ mà không tự làm mình quá tải.</p>
+          <div class="hero-links"><a class="btn btn-primary" href="#muc-tieu">Xem mục tiêu <span aria-hidden="true">↗</span></a><a class="btn btn-quiet" href="#lich-tuan">Lịch tuần <span aria-hidden="true">→</span></a></div>
+        </div>
+        <div class="hero-aside">
+          <div class="quote-mark">“</div><div class="small-title">Nguyên tắc làm việc</div>
+          <h2>Kỷ luật không làm mục tiêu nhỏ lại. Nó giúp mục tiêu có chỗ để lớn lên.</h2>
+          <p>Chọn việc cần làm. Làm đến nơi. Rồi mới chuyển bước.</p>
+        </div>
+      </section>
+
+      <section class="stats" aria-label="Tổng quan tuần">
+        <article class="stat"><div class="stat-label">Phiên tập trung tuần này</div><div class="stat-value">08<span style="font-size:14px;color:#8090a4"> / 12</span></div><div class="stat-foot"><strong>+2 phiên</strong> so với tuần trước</div></article>
+        <article class="stat"><div class="stat-label">Mốc công việc hoàn thành</div><div class="stat-value">03<span style="font-size:14px;color:#8090a4"> / 05</span></div><div class="stat-foot">Còn 2 mốc trong kế hoạch</div></article>
+        <article class="stat"><div class="stat-label">Buổi vận động</div><div class="stat-value">02<span style="font-size:14px;color:#8090a4"> / 03</span></div><div class="stat-foot">Duy trì nhịp đều trong tuần</div></article>
+        <article class="stat"><div class="stat-label">Ngày giữ nhịp</div><div class="stat-value">06<span style="font-size:14px;color:#8090a4"> ngày</span></div><div class="stat-foot">Ưu tiên tiến độ bền vững</div></article>
+      </section>
+
+      <section class="section" id="muc-tieu">
+        <div class="section-head"><div><div class="section-kicker">01 / Weekly execution</div><h2 class="section-title">Trọng tâm tuần này</h2></div><span class="section-note">Ít ưu tiên hơn, tiến xa hơn.</span></div>
+        <div class="grid-two">
+          <article class="card">
+            <div class="card-top"><div><h3>Ba việc đáng để tập trung</h3><p class="card-sub">Đặt kết quả lên trước số lượng đầu việc.</p></div><span class="pill">TUẦN 45</span></div>
+            <div class="priority-list">
+              <div class="priority"><div class="num">01</div><div><strong>Hoàn thành bản đầu tiên của portfolio</strong><span>Chốt bố cục và chọn 3 sản phẩm tiêu biểu</span></div><span class="status">ĐANG LÀM</span></div>
+              <div class="priority"><div class="num">02</div><div><strong>Ôn 4 buổi ngoại ngữ có chủ đích</strong><span>Chia đều nghe, nói, đọc và ghi chú từ mới</span></div><span class="status">2 / 4</span></div>
+              <div class="priority"><div class="num">03</div><div><strong>Giữ lịch vận động ba buổi</strong><span>Ưu tiên sức khỏe và khả năng tập trung</span></div><span class="status wait">1 BUỔI CÒN LẠI</span></div>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card-top"><div><h3>Mục tiêu 90 ngày</h3><p class="card-sub">Xây nền tảng vững trước khi tăng tốc.</p></div><span class="pill">12 TUẦN</span></div>
+            <div class="goal-row"><div class="goal-meta"><strong>Năng lực chuyên môn</strong><span>64%</span></div><div class="progress-line"><i style="width:64%"></i></div><div class="goal-foot">Hoàn thiện lộ trình học và 2 sản phẩm ứng dụng.</div></div>
+            <div class="goal-row"><div class="goal-meta"><strong>Portfolio cá nhân</strong><span>42%</span></div><div class="progress-line"><i style="width:42%"></i></div><div class="goal-foot">Tập trung vào chất lượng và câu chuyện của sản phẩm.</div></div>
+            <div class="goal-row"><div class="goal-meta"><strong>Thể lực & nhịp sống</strong><span>58%</span></div><div class="progress-line"><i style="width:58%"></i></div><div class="goal-foot">Giữ lịch vận động ổn định, ngủ đủ và nghỉ đúng lúc.</div></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="du-an">
+        <div class="section-head"><div><div class="section-kicker">02 / Long-term progress</div><h2 class="section-title">Dự án & kỹ năng</h2></div><span class="section-note">Mỗi dự án có một bước tiếp theo cụ thể.</span></div>
+        <div class="projects">
+          <article class="card project"><div class="project-code">PROJECT 01 · LEARNING</div><h3>Nâng kỹ năng chuyên môn</h3><p>Học có mục tiêu, ghi lại phần đã áp dụng được vào thực tế.</p><div class="progress-line"><i style="width:64%"></i></div><div class="project-bottom"><span>Tiến độ tổng thể</span><b>64%</b></div></article>
+          <article class="card project"><div class="project-code">PROJECT 02 · PORTFOLIO</div><h3>Portfolio cá nhân</h3><p>Chọn sản phẩm, mô tả quyết định thiết kế và hoàn thiện bản trình bày.</p><div class="progress-line"><i style="width:42%"></i></div><div class="project-bottom"><span>Tiến độ tổng thể</span><b>42%</b></div></article>
+          <article class="card project"><div class="project-code">PROJECT 03 · LANGUAGE</div><h3>Ngoại ngữ mỗi ngày</h3><p>Tích lũy đều đặn bằng phiên học ngắn và đầu ra có thể kiểm tra.</p><div class="progress-line"><i style="width:58%"></i></div><div class="project-bottom"><span>Tiến độ tổng thể</span><b>58%</b></div></article>
+        </div>
+      </section>
+
+      <section class="section" id="lich-tuan">
+        <div class="section-head"><div><div class="section-kicker">03 / Time & energy</div><h2 class="section-title">Lịch tuần & nhịp sinh hoạt</h2></div><span class="section-note">Dữ liệu minh họa · tùy chỉnh theo lịch thật</span></div>
+        <div class="grid-two">
+          <article class="card">
+            <div class="card-top"><div><h3>Khung giờ tiêu biểu</h3><p class="card-sub">Bảo vệ khoảng tập trung cho việc quan trọng.</p></div><span class="pill">THỨ TƯ</span></div>
+            <div class="schedule">
+              <div class="schedule-row"><div class="schedule-time">08:00</div><div class="schedule-event"><strong>Phiên tập trung sâu</strong><span>Học / xử lý việc khó nhất trong ngày</span></div><div class="schedule-tag">FOCUS</div></div>
+              <div class="schedule-row"><div class="schedule-time">10:30</div><div class="schedule-event"><strong>Ôn ngoại ngữ</strong><span>Nghe chủ động · ghi lại cụm từ mới</span></div><div class="schedule-tag">LEARN</div></div>
+              <div class="schedule-row"><div class="schedule-time">14:00</div><div class="schedule-event"><strong>Phát triển portfolio</strong><span>Hoàn thiện một phần nhỏ của sản phẩm</span></div><div class="schedule-tag">BUILD</div></div>
+              <div class="schedule-row"><div class="schedule-time">17:30</div><div class="schedule-event"><strong>Vận động & phục hồi</strong><span>Buổi tập nhẹ, không ép quá sức</span></div><div class="schedule-tag">MOVE</div></div>
+            </div>
+          </article>
+          <article class="card" id="thoi-quen">
+            <div class="card-top"><div><h3>Thói quen nền tảng</h3><p class="card-sub">Một hệ thống tốt phải dùng được vào ngày bận.</p></div><span class="pill">THEO TUẦN</span></div>
+            <div class="habit-grid">
+              <div class="habit"><div class="habit-icon">F</div><strong>Tập trung sâu</strong><span>4 / 5 phiên</span></div>
+              <div class="habit"><div class="habit-icon">L</div><strong>Học ngoại ngữ</strong><span>3 / 5 ngày</span></div>
+              <div class="habit"><div class="habit-icon">M</div><strong>Vận động</strong><span>2 / 3 buổi</span></div>
+              <div class="habit"><div class="habit-icon">R</div><strong>Nhìn lại tuần</strong><span>1 / 1 lần</span></div>
+            </div>
+            <div class="week" aria-label="Tiến độ các ngày trong tuần"><div class="day done"><span>T2</span><b>02</b><i></i></div><div class="day done"><span>T3</span><b>03</b><i></i></div><div class="day today"><span>T4</span><b>04</b><i></i></div><div class="day"><span>T5</span><b>05</b><i></i></div><div class="day"><span>T6</span><b>06</b><i></i></div><div class="day"><span>T7</span><b>07</b><i></i></div><div class="day"><span>CN</span><b>08</b><i></i></div></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="ghi-chu">
+        <div class="section-head"><div><div class="section-kicker">04 / Notes & next action</div><h2 class="section-title">Ghi lại. Rút kinh nghiệm. Đi tiếp.</h2></div><span class="section-note">Ghi chú lưu trên trình duyệt hiện tại.</span></div>
+        <div class="notes-area">
+          <article class="card note-box"><div class="card-top"><div><h3>Việc cần nhớ</h3><p class="card-sub">Ghi nhanh ý tưởng hoặc đầu việc tiếp theo.</p></div><span class="pill">LOCAL</span></div><form class="quick-add" id="quick-form"><input class="quick-input" id="quick-input" maxlength="120" placeholder="Ví dụ: chốt outline portfolio..." aria-label="Việc cần nhớ"><button class="tiny-btn" type="submit">Thêm</button></form><div class="quick-items" id="quick-items"></div></article>
+          <article class="card note-box"><div class="card-top"><div><h3>Điều rút ra trong tuần</h3><p class="card-sub">Một điều làm tốt, một điều muốn cải thiện.</p></div><span class="pill">REVIEW</span></div><textarea id="reflection" maxlength="500" placeholder="Tuần này mình nhận ra..."></textarea><div class="note-actions"><span class="saved-note" id="save-state">Chỉ lưu trên thiết bị này</span><button class="tiny-btn" id="save-reflection" type="button">Lưu ghi chú</button></div></article>
+        </div>
+        <div class="quote-panel"><div class="quote-bar"></div><div><p>Không cần nhanh hơn tất cả. Hãy đều đặn tiến xa hơn phiên bản hôm qua.</p><small>MỘT CÂU NHẮC CHO NHỮNG NGÀY CẦN GIỮ NHỊP</small></div></div>
+      </section>
+      <footer><span>WORKBENCH · Không gian làm việc cá nhân</span><span>Mẫu giao diện dùng dữ liệu minh họa · Ghi chú được lưu cục bộ trong trình duyệt</span></footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script>
+    const dateNode=document.getElementById('today');
+    const translations={
+      'BẢN MẪU · DỮ LIỆU MINH HỌA':'展示样稿 · 示例数据',
+      'Không gian':'工作空间','Tổng quan':'总览','Mục tiêu':'目标','Dự án':'项目','Lịch tuần':'每周日程','Thói quen':'习惯','Ghi chú':'笔记','Tác vụ nhanh':'快捷操作','Thêm việc / ghi chú':'添加任务 / 笔记','Một việc quan trọng tại một thời điểm.':'一次专注一件重要的事。',
+      'Làm đúng việc.':'做正确的事。','Tiến đều mỗi ngày.':'每天稳步前进。','Một không gian gọn để nhìn rõ điều quan trọng, chia mục tiêu thành bước nhỏ và theo dõi tiến độ mà không tự làm mình quá tải.':'用一个清晰的空间看见重点，把目标拆成小步骤，稳步追踪进展，不让自己被任务压垮。','Xem mục tiêu':'查看目标','Lịch tuần':'每周日程','Nguyên tắc làm việc':'做事原则','Kỷ luật không làm mục tiêu nhỏ lại. Nó giúp mục tiêu có chỗ để lớn lên.':'自律不会缩小目标，而是为目标的成长留出空间。','Chọn việc cần làm. Làm đến nơi. Rồi mới chuyển bước.':'选定要做的事，认真完成，再进入下一步。',
+      'Phiên tập trung tuần này':'本周专注时段','so với tuần trước':'比上周','Mốc công việc hoàn thành':'已完成的里程碑','Còn 2 mốc trong kế hoạch':'计划中还剩 2 个里程碑','Buổi vận động':'运动次数','Duy trì nhịp đều trong tuần':'保持每周稳定节奏','Ngày giữ nhịp':'连续保持节奏','Ưu tiên tiến độ bền vững':'优先保持可持续进度',
+      '01 / Weekly execution':'01 / 本周执行','Trọng tâm tuần này':'本周重点','Ít ưu tiên hơn, tiến xa hơn.':'聚焦少数重点，走得更远。','Ba việc đáng để tập trung':'值得专注的三件事','Đặt kết quả lên trước số lượng đầu việc.':'先看成果，再看任务数量。','TUẦN 45':'第 45 周','Hoàn thành bản đầu tiên của portfolio':'完成个人作品集初稿','Chốt bố cục và chọn 3 sản phẩm tiêu biểu':'确定版式并挑选 3 个代表作品','ĐANG LÀM':'进行中','Ôn 4 buổi ngoại ngữ có chủ đích':'有计划地学习 4 次外语','Chia đều nghe, nói, đọc và ghi chú từ mới':'均衡练习听、说、读，并记录新词','Giữ lịch vận động ba buổi':'每周安排三次运动','Ưu tiên sức khỏe và khả năng tập trung':'优先照顾健康与专注力','1 BUỔI CÒN LẠI':'还差 1 次',
+      'Mục tiêu 90 ngày':'90 天目标','Xây nền tảng vững trước khi tăng tốc.':'先打好基础，再提升速度。','12 TUẦN':'12 周','Năng lực chuyên môn':'专业能力','Hoàn thiện lộ trình học và 2 sản phẩm ứng dụng.':'完成学习路径，并做出 2 个实践作品。','Portfolio cá nhân':'个人作品集','Tập trung vào chất lượng và câu chuyện của sản phẩm.':'重视作品质量与创作过程。','Thể lực & nhịp sống':'体能与生活节奏','Giữ lịch vận động ổn định, ngủ đủ và nghỉ đúng lúc.':'保持规律运动、充足睡眠，并适时休息。',
+      '02 / Long-term progress':'02 / 长期进展','Dự án & kỹ năng':'项目与技能','Mỗi dự án có một bước tiếp theo cụ thể.':'为每个项目确定一个明确的下一步。','PROJECT 01 · LEARNING':'项目 01 · 学习','Nâng kỹ năng chuyên môn':'提升专业技能','Học có mục tiêu, ghi lại phần đã áp dụng được vào thực tế.':'带着目标学习，并记录已能应用于实践的内容。','Tiến độ tổng thể':'整体进度','PROJECT 02 · PORTFOLIO':'项目 02 · 作品集','Chọn sản phẩm, mô tả quyết định thiết kế và hoàn thiện bản trình bày.':'筛选作品，说明设计思路，并完善展示内容。','PROJECT 03 · LANGUAGE':'项目 03 · 语言','Ngoại ngữ mỗi ngày':'每日外语练习','Tích lũy đều đặn bằng phiên học ngắn và đầu ra có thể kiểm tra.':'通过短时练习持续积累，并产出可检查的成果。',
+      '03 / Time & energy':'03 / 时间与精力','Lịch tuần & nhịp sinh hoạt':'每周日程与生活节奏','Dữ liệu minh họa · tùy chỉnh theo lịch thật':'示例数据 · 请按实际日程调整','Khung giờ tiêu biểu':'参考时间安排','Bảo vệ khoảng tập trung cho việc quan trọng.':'为重要任务留出专注时间。','THỨ TƯ':'星期三','Phiên tập trung sâu':'深度专注时段','Học / xử lý việc khó nhất trong ngày':'学习 / 处理当天最难的任务','Ôn ngoại ngữ':'外语复习','Nghe chủ động · ghi lại cụm từ mới':'主动听力 · 记录新词组','Phát triển portfolio':'完善个人作品集','Hoàn thiện một phần nhỏ của sản phẩm':'完成作品中的一个小部分','Vận động & phục hồi':'运动与恢复','Buổi tập nhẹ, không ép quá sức':'轻量训练，不勉强自己','Thói quen nền tảng':'基础习惯','Một hệ thống tốt phải dùng được vào ngày bận.':'好的系统，在忙碌时也能坚持使用。','THEO TUẦN':'每周追踪','Tập trung sâu':'深度专注','Học ngoại ngữ':'外语学习','Vận động':'运动','Nhìn lại tuần':'每周回顾','4 / 5 phiên':'4 / 5 次','3 / 5 ngày':'3 / 5 天','2 / 3 buổi':'2 / 3 次','1 / 1 lần':'1 / 1 次','Tiến độ các ngày trong tuần':'本周每日进度',
+      '04 / Notes & next action':'04 / 笔记与下一步','Ghi lại. Rút kinh nghiệm. Đi tiếp.':'记录、复盘，然后继续前进。','Ghi chú lưu trên trình duyệt hiện tại.':'笔记保存在当前浏览器中。','Việc cần nhớ':'待办事项','Ghi nhanh ý tưởng hoặc đầu việc tiếp theo.':'快速记录想法或下一步任务。','Ví dụ: chốt outline portfolio...':'例如：确定作品集大纲……','Thêm':'添加','Điều rút ra trong tuần':'本周复盘','Một điều làm tốt, một điều muốn cải thiện.':'记录一件做得好的事和一件想改进的事。','Tuần này mình nhận ra...':'这周我意识到……','Chỉ lưu trên thiết bị này':'仅保存在此设备','Lưu ghi chú':'保存笔记','Đã lưu trên thiết bị này':'已保存在此设备','Không cần nhanh hơn tất cả. Hãy đều đặn tiến xa hơn phiên bản hôm qua.':'不必比所有人都快，只要持续超越昨天的自己。','MỘT CÂU NHẮC CHO NHỮNG NGÀY CẦN GIỮ NHỊP':'送给需要坚持下去的日子','WORKBENCH · Không gian làm việc cá nhân':'WORKBENCH · 个人工作空间','Mẫu giao diện dùng dữ liệu minh họa · Ghi chú được lưu cục bộ trong trình duyệt':'界面示例数据 · 笔记仅保存在本地浏览器',
+      'Lên đầu trang':'返回顶部','Ngôn ngữ':'语言','+2 phiên':'+2 次','Nhấn để xóa ghi chú này':'点击删除此笔记','Nhấn để xóa ghi chú này.':'点击删除此笔记。','Đã xóa ghi chú trên trình duyệt này.':'已从当前浏览器删除笔记。','Đã lưu trên trình duyệt hiện tại.':'已保存在当前浏览器。','Đã lưu ghi chú cục bộ.':'笔记已保存在本地。','Chỉ lưu trên thiết bị này':'仅保存在此设备','Đã lưu trên thiết bị này':'已保存在此设备'
+    };
+    const initialTexts=[];
+    const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+    while(walker.nextNode()){const node=walker.currentNode;const base=node.nodeValue;const value=base.trim();if(value)initialTexts.push({node,value,base})}
+    function makeBilingual(vi,zh){const wrapper=document.createElement('span');wrapper.className='bilingual-text';const viNode=document.createElement('span');viNode.className='vi-copy';viNode.textContent=vi;const zhNode=document.createElement('span');zhNode.className='zh-copy';zhNode.lang='zh-CN';zhNode.textContent=zh;wrapper.append(viNode,zhNode);return wrapper}
+    for(const {node,value,base} of initialTexts){const zh=translations[value];if(!zh||!node.parentNode)continue;const start=base.indexOf(value);const fragment=document.createDocumentFragment();if(start>0)fragment.append(document.createTextNode(base.slice(0,start)));fragment.append(makeBilingual(value,zh));const end=start+value.length;if(end<base.length)fragment.append(document.createTextNode(base.slice(end)));node.replaceWith(fragment)}
+    document.documentElement.lang='vi';document.getElementById('quick-input').placeholder='Ví dụ: chốt outline portfolio... / 例如：确定作品集大纲……';document.getElementById('quick-input').setAttribute('aria-label','Việc cần nhớ / 待办事项');document.getElementById('reflection').placeholder='Tuần này mình nhận ra... / 这周我意识到……';document.querySelector('nav[aria-label]').setAttribute('aria-label','Điều hướng chính / 主导航');
+    const viDate=new Intl.DateTimeFormat('vi-VN',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(new Date());const zhDate=new Intl.DateTimeFormat('zh-CN',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(new Date());dateNode.replaceChildren(makeBilingual(viDate,zhDate),document.createTextNode(' · WORK / LEARN / BUILD'));
+    const toast=document.getElementById('toast');let toastTimer;
+    function setBilingualContent(el,vi,zh){el.replaceChildren(makeBilingual(vi,zh))}
+    function notify(vi,zh){setBilingualContent(toast,vi,zh);toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2600)}
+    const list=document.getElementById('quick-items');
+    let items=[];try{items=JSON.parse(localStorage.getItem('workbench-items')||'[]')}catch{}
+    function renderItems(){list.replaceChildren();items.forEach((item,index)=>{const row=document.createElement('div');row.className='quick-item';row.textContent=item;row.title='Nhấn để xóa ghi chú này / 点击删除此笔记';row.tabIndex=0;row.setAttribute('role','button');row.addEventListener('click',()=>removeItem(index));row.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();removeItem(index)}});list.append(row)})}
+    function removeItem(index){items.splice(index,1);localStorage.setItem('workbench-items',JSON.stringify(items));renderItems();notify('Đã xóa ghi chú trên trình duyệt này.','已从当前浏览器删除笔记。')}
+    document.getElementById('quick-form').addEventListener('submit',e=>{e.preventDefault();const input=document.getElementById('quick-input');const value=input.value.trim();if(!value)return;items.unshift(value);items=items.slice(0,8);localStorage.setItem('workbench-items',JSON.stringify(items));input.value='';renderItems();notify('Đã lưu trên trình duyệt hiện tại.','已保存在当前浏览器。')});renderItems();
+    const reflection=document.getElementById('reflection');const saved=localStorage.getItem('workbench-reflection');if(saved)reflection.value=saved;
+    document.getElementById('save-reflection').addEventListener('click',()=>{localStorage.setItem('workbench-reflection',reflection.value);setBilingualContent(document.getElementById('save-state'),'Đã lưu trên thiết bị này','已保存在此设备');notify('Đã lưu ghi chú cục bộ.','笔记已保存在本地。')});
+    const links=[...document.querySelectorAll('.nav a[href^="#"]')];const sections=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+    const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+entry.target.id))}}),{rootMargin:'-25% 0px -65% 0px'});sections.forEach(section=>observer.observe(section));
+  </script>
+</body>
+</html>
